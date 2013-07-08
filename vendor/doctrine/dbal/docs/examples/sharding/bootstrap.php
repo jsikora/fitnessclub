@@ -3,6 +3,10 @@
 use Doctrine\DBAL\DriverManager;
 use Doctrine\Shards\DBAL\SQLAzure\SQLAzureShardManager;
 
+//mine from Doctrine documentation
+use Doctrine\ORM\Tools\Setup;
+use Doctrine\ORM\EntityManager;
+
 require_once "vendor/autoload.php";
 
 $config = array(
@@ -24,3 +28,19 @@ if ($config['host'] == "tcp:dbname.windows.net") {
 $conn = DriverManager::getConnection($config);
 $shardManager = new SQLAzureShardManager($conn);
 
+//mine from Doctrine documentation
+//default Doctrine ORM configuration for Annotations
+$isDevMode = true;
+$config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/src"),$isDevMode);
+
+//database  configuration parameters
+$connectionOptions = array(
+    'driver' => 'pdo_mysql',
+    'host'   => '127.0.0.1',
+    'dbname' => 'fitnessclub',
+    'username' => 'root',
+    'password' => ''
+);
+
+//obtaining the entity manager
+$entityManager = $entityManager::create($connectionOptions,$config);
