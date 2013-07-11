@@ -39,11 +39,11 @@ class UserTable
     public function saveUser(User $user)
     {
         $data = array(
-            'artist' => $user->artist,
-            'title'  => $user->title,
+            'name' => $user->getName(),
+            'email'  => $user->getEmail(),
         );
 
-        $id = (int)$user->id;
+        $id = (int)$user->getId();
         if ($id == 0) {
             $this->tableGateway->insert($data);
         } else {

@@ -13,15 +13,22 @@ $this->headTitle($title);
         <th>Email</th>
         <th>&nbsp;</th>
     </tr>
+
+    <?sphp
+    /**
+     * @var \User\Model\User $user
+     */
+    ?>
     <?php foreach ($users as $user) : ?>
         <tr>
-            <td><?php echo $this->escapeHtml($user->name);?></td>
-            <td><?php echo $this->escapeHtml($user->email);?></td>
+
+            <td><?php echo $this->escapeHtml($user->getFirstName().' '.$user->getLastName());?></td>
+            <td><?php echo $this->escapeHtml($user->getEmail());?></td>
             <td>
                 <a href="<?php echo $this->url('user',
-                    array('action'=>'edit', 'id' => $user->id));?>">Edit</a>
+                    array('action'=>'edit', 'id' => $user->getId()));?>">Edit</a>
                 <a href="<?php echo $this->url('user',
-                    array('action'=>'delete', 'id' => $user->id));?>">Delete</a>
+                    array('action'=>'delete', 'id' => $user->getId()));?>">Delete</a>
             </td>
         </tr>
     <?php endforeach; ?>

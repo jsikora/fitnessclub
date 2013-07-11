@@ -1,44 +1,261 @@
 <?php
 namespace User\Model;
 
+use Zend\InputFilter\Factory as InputFactory;
+use Zend\InputFilter\InputFilter;
+use Zend\InputFilter\InputFilterAwareInterface;
+use Zend\InputFilter\InputFilterInterface;
 /**
  * Class User
  * @package User\Model
  */
-class User {
+class User implements InputFilterAwareInterface {
 
     /*
      * @var int
      * @Id @Column(type="integer")  @GeneratedValue
      */
-    public $id;
+    protected $id;
 
     /**
      * @var string
      * @Column(type="string")
      */
-    protected $name;
-    protected $mail;
+    protected $lastName;
+
+    /**
+     * @var string
+     */
+    protected $firstName;
+    /**
+     * @var string
+     */
+    protected $email;
+    /**
+     * @var integer
+     */
     protected $roleId;
-    protected $trainerGroup;
+    //protected $trainerGroup;
+
+    /**
+     * @var integer
+     */
+    protected $birthYear;
+
+    /**
+     * @var string
+     */
+    protected $city;
+
+    /**
+     * @var InputFilterAwareInterface
+     */
+    protected $inputFilter;
+
+    /**
+     * @var string
+     */
+    protected static $sex;
 
     public function getId() {
         return $this->id;
     }
 
-    public function getName() {
-        return $this->name;
+    /**
+     * @return string
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
     }
 
-    public function setName($name) {
-        $this->name = $name;
+    /**
+     * @return string
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
     }
 
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBirthYear()
+    {
+        return $this->birthYear;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSex()
+    {
+        return self::$sex;
+    }
+
+    public function isFemale()
+    {
+        return (bool)(self::sex === 'f');
+    }
+
+    public function isMale()
+    {
+        return (bool)(self::sex === 'm');
+    }
+
+
+    /**
+     * @param $lastName
+     */
+    public function setLastName($lastName) {
+        $this->lastName = $lastName;
+    }
+
+
+    public function setSexAsFemale()
+    {
+        self::$sex = 'f';
+    }
+
+    public function setSexAsMale()
+    {
+        self::$sex = 'm';
+    }
+
+    public function setFirstName($firstName) {
+        $this->firstName = $firstName;
+    }
+    
+    
+
+    /**
+     * @param $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * @param $city
+     */
+    public function setCity($city) {
+        $this->city = $city;
+    }
+
+    /**
+     * @param $birthYear
+     */
+    public function setBirthYear($birthYear)
+    {
+        $this->birthYear = $birthYear;
+    }
     public function exchangeArray($data) {
-        $this->id = (!empty($data['id'])) ? $data['id'] : null;
-        $this->email = (!empty($data['email'])) ? $data['email'] : null;
-        $this->name = (!empty($data['name'])) ? $data['name'] : null;
-        $this->roleId = (!empty($data['role_id'])) ? $data['role_id'] : null;
 
+        $data = $this->prepareExchangeArray($data);
+
+        $this->id = (!empty($data['id'])) ? $data['id'] : null;
+        $this->setEmail($data['email']);
+        $this->setFirstName($data['first_name']);
+        $this->setLastName($data['last_name']);
+        $this->setBirthYear($data['birth_year']);
+        $this->setCity($data['city']);
+        //$this->roleId = (!empty($data['role_id'])) ? $data['role_id'] : null;
+    }
+
+    /**
+     * Filling missing User attributes by empty value;
+     * @param array $data
+     * @return array
+     */
+    public function prepareExchangeArray($data = array())
+    {
+        $data['id']         = (!empty($data['id'])) ? $data['id'] : null;
+        $data['email']      = (!empty($data['email'])) ? $data['email'] : null;
+        $data['lastName']   = (!empty($data['last_name'])) ? $data['last_name'] : null;
+        $data['city']       = (!empty($data['city'])) ? $data['city'] : null;
+        $data['birthYear']  = (!empty($data['birth_year'])) ? $data['birth_year'] : null;
+        $data['firstName']  = (!empty($data['first_name'])) ? $data['first_name'] : null;
+        $data['sex']        = (!empty($data['sex'])) ? $data['sex'] : 'm';
+        return $data;
+    }
+
+    public function setInputFilter(InputFilterInterface $inputFilter)
+    {
+        throw new \Exception("Not used");
+    }
+
+    public function getInputFilter()
+    {
+        if (!$this->inputFilter) {
+            $inputFilter = new InputFilter();
+            $factory     = new InputFactory();
+
+            $inputFilter->add($factory->createInput(array(
+                'name'     => 'id',
+                'required' => true,
+                'filters'  => array(
+                    array('name' => 'Int'),
+                ),
+            )));
+
+            $inputFilter->add($factory->createInput(array(
+                'name'     => 'name',
+                'required' => true,
+                'filters'  => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name'    => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                            'max'      => 100,
+                        ),
+                    ),
+                ),
+            )));
+
+            $inputFilter->add($factory->createInput(array(
+                'name'     => 'email',
+                'required' => true,
+                'filters'  => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name'    => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                            'max'      => 50,
+                        ),
+                    ),
+                ),
+            )));
+
+            $this->inputFilter = $inputFilter;
+        }
+
+        return $this->inputFilter;
     }
 }
