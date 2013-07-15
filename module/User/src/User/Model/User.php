@@ -172,11 +172,18 @@ class User implements InputFilterAwareInterface {
 
         $this->id = (!empty($data['id'])) ? $data['id'] : null;
         $this->setEmail($data['email']);
-        $this->setFirstName($data['first_name']);
-        $this->setLastName($data['last_name']);
-        $this->setBirthYear($data['birth_year']);
+        $this->setFirstName($data['firstName']);
+        $this->setLastName($data['lastName']);
+        $this->setBirthYear($data['birthYear']);
         $this->setCity($data['city']);
+
         //$this->roleId = (!empty($data['role_id'])) ? $data['role_id'] : null;
+    }
+
+    //it is using by hydrator object for method bind()
+    public function getArrayCopy()
+    {
+        return get_object_vars($this);
     }
 
     /**
@@ -188,10 +195,10 @@ class User implements InputFilterAwareInterface {
     {
         $data['id']         = (!empty($data['id'])) ? $data['id'] : null;
         $data['email']      = (!empty($data['email'])) ? $data['email'] : null;
-        $data['lastName']   = (!empty($data['last_name'])) ? $data['last_name'] : null;
+        $data['lastName']   = (!empty($data['lastName'])) ? $data['lastName'] : null;
         $data['city']       = (!empty($data['city'])) ? $data['city'] : null;
-        $data['birthYear']  = (!empty($data['birth_year'])) ? $data['birth_year'] : null;
-        $data['firstName']  = (!empty($data['first_name'])) ? $data['first_name'] : null;
+        $data['birthYear']  = (!empty($data['birthYear'])) ? $data['birthYear'] : null;
+        $data['firstName']  = (!empty($data['firstName'])) ? $data['firstName'] : null;
         $data['sex']        = (!empty($data['sex'])) ? $data['sex'] : 'm';
         return $data;
     }
@@ -216,7 +223,45 @@ class User implements InputFilterAwareInterface {
             )));
 
             $inputFilter->add($factory->createInput(array(
-                'name'     => 'name',
+                'name'     => 'firstName',
+                'required' => true,
+                'filters'  => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name'    => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                            'max'      => 100,
+                        ),
+                    ),
+                ),
+            )));
+
+            $inputFilter->add($factory->createInput(array(
+                'name'     => 'lastName',
+                'required' => true,
+                'filters'  => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name'    => 'StringLength',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                            'min'      => 1,
+                            'max'      => 100,
+                        ),
+                    ),
+                ),
+            )));
+
+            $inputFilter->add($factory->createInput(array(
+                'name'     => 'birthYear',
                 'required' => true,
                 'filters'  => array(
                     array('name' => 'StripTags'),

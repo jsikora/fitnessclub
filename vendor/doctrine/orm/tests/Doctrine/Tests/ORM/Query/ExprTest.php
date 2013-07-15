@@ -175,7 +175,7 @@ class ExprTest extends \Doctrine\Tests\OrmTestCase
 
     public function testConcatExpr()
     {
-        $this->assertEquals('CONCAT(u.first_name, u.last_name)', (string) $this->_expr->concat('u.first_name', 'u.last_name'));
+        $this->assertEquals('CONCAT(u.firstName, u.lastName)', (string) $this->_expr->concat('u.firstName', 'u.lastName'));
     }
 
     public function testSubstringExpr()
@@ -194,17 +194,17 @@ class ExprTest extends \Doctrine\Tests\OrmTestCase
 
     public function testLowerExpr()
     {
-        $this->assertEquals('LOWER(u.first_name)', (string) $this->_expr->lower('u.first_name'));
+        $this->assertEquals('LOWER(u.firstName)', (string) $this->_expr->lower('u.firstName'));
     }
 
     public function testUpperExpr()
     {
-        $this->assertEquals('UPPER(u.first_name)', (string) $this->_expr->upper('u.first_name'));
+        $this->assertEquals('UPPER(u.firstName)', (string) $this->_expr->upper('u.firstName'));
     }
 
     public function testLengthExpr()
     {
-        $this->assertEquals('LENGTH(u.first_name)', (string) $this->_expr->length('u.first_name'));
+        $this->assertEquals('LENGTH(u.firstName)', (string) $this->_expr->length('u.firstName'));
     }
 
     public function testGreaterThanExpr()

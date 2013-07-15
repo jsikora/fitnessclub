@@ -39,7 +39,9 @@ class UserTable
     public function saveUser(User $user)
     {
         $data = array(
-            'name' => $user->getName(),
+            'firstName' => $user->getFirstName(),
+            'lastName' => $user->getLastName(),
+            'birthYear' => $user->getBirthYear(),
             'email'  => $user->getEmail(),
         );
 

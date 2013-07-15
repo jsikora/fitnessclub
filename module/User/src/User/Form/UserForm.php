@@ -13,21 +13,19 @@ class UserForm extends Form
             'type' => 'Hidden'
         ));
         $this->add(array(
-            'name' => 'first_name',
+            'name' => 'firstName',
             'type' => 'Text',
             'options' => array(
                 'label' => 'First name'
             )
         ));
-
         $this->add(array(
-            'name' => 'second_name',
+            'name' => 'lastName',
             'type' => 'Text',
             'options' => array(
-                'label' => 'Second name'
+                'label' => 'Last name'
             )
         ));
-
         $this->add(array(
             'name' => 'email',
             'type' => 'Text',
@@ -37,7 +35,15 @@ class UserForm extends Form
         ));
 
         $this->add(array(
-           'name' => 'submit-add-user',
+           'name' => 'birthYear',
+            'type' => "Text",
+            'options' => array(
+                'label' => 'Birth year'
+            )
+        ));
+
+        $this->add(array(
+           'name' => 'submit',
             'type' => 'Submit',
             'options' => array(
                 'value' => 'Go',

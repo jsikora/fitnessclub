@@ -28,7 +28,7 @@ class UserController extends AbstractActionController
     public function addAction()
     {
         $form = new UserForm();
-        $form->get('submit-add-user')->setValue('Add');
+        $form->get('submit')->setValue('Add');
 
         $request = $this->getRequest();
         if($request->isPost()) {
@@ -44,12 +44,74 @@ class UserController extends AbstractActionController
         return array('form' => $form);
     }
 
-    public function editAction() {
+    public function editAction()
+    {
+        $id = (int) $this->params()->fromRoute('id',0);
+        if(!$id) {
+            $this->redirect()->toRoute('user', array(
+                'action' => 'add'
+            ));
+        }
 
+        //Get user with specified id. In case it cannot be found
+        // go to the index page
+        try{
+            /**
+             * @var UserTable
+             */
+            $user = $this->getUserTable()->getUser($id);
+
+        } catch (\Exception $ex) {
+            return $this->redirect()->toRoute('user', array(
+                'action' => 'index'
+            ));
+        }
+
+        $form = new UserForm();
+        $form->bind($user);
+        $form->get('submit')->setAttribute('value', 'Edit');
+
+        $request = $this->getRequest();
+        if($request->isPost()) {
+            $form->setInputFilter($user->getInputFilter());
+            $form->setData($request->getPost());
+
+            if($form->isValid()) {
+                $this->getUserTable()->saveUser($user);
+
+                //Redirect to list of users
+                return $this->redirect()->toRoute('user');
+            }
+        }
+        return array(
+            'id' => $id,
+            'form' => $form
+        );
     }
 
-    public function deleteAction() {
+    public function deleteAction()
+    {
+        $id = (int) $this->params()->fromRoute('id',0);
+        if(!$id) {
+            return $this->redirect()->toRoute('user');
+        }
 
+        $request = $this->getRequest();
+        if($request->isPost()) {
+            $del = $request->getPost('del','No');
+
+            if($del == 'Yes') {
+                $id = (int) $request->getPost('id');
+                $this->getUserTable()->deleteUser($id);
+            }
+
+            return $this->redirect()->toRoute('user');
+        }
+
+        return array(
+            'id' => $id,
+            'user' => $this->getUserTable()->getUser($id)
+        );
     }
 
     /**

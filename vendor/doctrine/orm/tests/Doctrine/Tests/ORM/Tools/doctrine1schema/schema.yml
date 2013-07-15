@@ -18,8 +18,8 @@ User:
 
 Profile:
   columns:
-    first_name: string(255)
-    last_name: string(255)
+    firstName: string(255)
+    lastName: string(255)
     user_id: integer
   relations:
     User:
